@@ -1,13 +1,22 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "OpenAPI definition",
-    "version": "v0"
+    "title": "Tabular API",
+    "description": "Tabular OpenAPI Definition",
+    "version": "1.54.5"
   },
   "servers": [
     {
-      "url": "https://api.tabular.io",
-      "description": "Generated server url"
+      "url": "{scheme}://{server}",
+      "description": "Tabular API Endpoint",
+      "variables": {
+        "server": {
+          "default": "api.tabular.io"
+        },
+        "scheme": {
+          "default": "https"
+        }
+      }
     }
   ],
   "paths": {
@@ -107,10 +116,10 @@
         ]
       }
     },
-    "/v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{database}/grants": {
+    "/v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{tableId}/grants": {
       "get": {
-        "summary": "List all grants for database",
-        "operationId": "getDatabaseRoleGrants",
+        "summary": "List all grants for table",
+        "operationId": "listTableRoleGrants",
         "parameters": [
           {
             "name": "organizationId",
@@ -131,11 +140,203 @@
             }
           },
           {
-            "name": "database",
+            "name": "databaseId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tableId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListTableRoleGrantsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Grant privileges on table",
+        "operationId": "grantPrivilegesOnTable",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "databaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tableId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RoleTableGrantRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Revoke privileges on table",
+        "operationId": "revokePrivilegesOnTable",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "databaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tableId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RoleTableGrantRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/grants": {
+      "get": {
+        "summary": "List all grants for database",
+        "operationId": "listDatabaseRoleGrants",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "databaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -180,11 +381,12 @@
             }
           },
           {
-            "name": "database",
+            "name": "databaseId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -194,7 +396,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/ChangeRoleGrantRequest"
+                  "$ref": "#/components/schemas/RoleDatabaseGrantRequest"
                 }
               }
             }
@@ -235,11 +437,12 @@
             }
           },
           {
-            "name": "database",
+            "name": "databaseId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -249,7 +452,7 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/ChangeRoleGrantRequest"
+                  "$ref": "#/components/schemas/RoleDatabaseGrantRequest"
                 }
               }
             }
@@ -584,6 +787,329 @@
         ]
       }
     },
+    "/v1/organizations/{organizationId}/labels/{labelId}/grants": {
+      "get": {
+        "summary": "List all grants for label",
+        "operationId": "listLabelRoleGrants",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "labelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListRoleLabelGrantsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Grant privileges on a label.",
+        "operationId": "grantPrivilegesOnLabel",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "labelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RoleLabelGrantRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Revoke privileges on a label.",
+        "operationId": "revokePrivilegesOnLabel",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "labelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RoleLabelGrantRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/{organizationId}/labels/{labelId}/field/masking": {
+      "put": {
+        "summary": "Change label field masking mode.",
+        "operationId": "updateLabelFieldMaskingMode",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "labelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLabelFieldMaskingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Label"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables": {
+      "post": {
+        "summary": "Create and load a table with the data found in a bucket.",
+        "operationId": "createTableFromFiles",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "databaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTableRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTableResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{tableId}/loads": {
+      "post": {
+        "summary": "One time batch load a table with the data found in a bucket.",
+        "operationId": "loadTableData",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "databaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tableId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoadTableRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadTableResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
+    },
     "/v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/": {
       "post": {
         "summary": "Creates database with extended information",
@@ -818,6 +1344,82 @@
         ]
       }
     },
+    "/v1/organizations/{organizationId}/labels/": {
+      "get": {
+        "summary": "Get organization labels",
+        "operationId": "listLabels",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListLabelsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Add a label to an organization",
+        "operationId": "createLabel",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLabelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Label"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
+    },
     "/v1/organizations/{organizationId}/iam/credentials/service-account": {
       "post": {
         "summary": "Create a service credential",
@@ -1038,6 +1640,134 @@
         ]
       }
     },
+    "/v1/organizations/{organizationId}/labels/{labelId}": {
+      "get": {
+        "summary": "Get organization label",
+        "operationId": "getLabel",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "labelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetLabelResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Remove a label from an organization.",
+        "operationId": "deleteLabel",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "labelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Update organization label.",
+        "operationId": "updateLabel",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "labelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/merge-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLabelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Label"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
+    },
     "/v1/organizations/{organizationId}/warehouses/{warehouseId}": {
       "get": {
         "summary": "Get a warehouse by id",
@@ -1117,8 +1847,8 @@
     },
     "/v1/organizations/{organizationId}/warehouses/{warehouseId}/grants/roles/{roleId}": {
       "get": {
-        "summary": "Get warehouse grants by role name",
-        "operationId": "getRoleWarehouseGrants",
+        "summary": "Get warehouse grants for role id",
+        "operationId": "listWarehouseRoleGrantsForRole",
         "parameters": [
           {
             "name": "organizationId",
@@ -1197,6 +1927,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "name"
+            }
           }
         ],
         "responses": {
@@ -1216,10 +1955,12 @@
             "TabularJWTAuth": []
           }
         ]
-      },
-      "delete": {
-        "summary": "Drops a database",
-        "operationId": "deleteDatabase",
+      }
+    },
+    "/v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{table}": {
+      "get": {
+        "summary": "Get table information",
+        "operationId": "getTable",
         "parameters": [
           {
             "name": "organizationId",
@@ -1240,7 +1981,16 @@
             }
           },
           {
-            "name": "database",
+            "name": "databaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "table",
             "in": "path",
             "required": true,
             "schema": {
@@ -1250,7 +2000,215 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTableResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{tableId}/loads/{tableLoadId}": {
+      "get": {
+        "summary": "One time batch load a table with the data found in a bucket.",
+        "operationId": "getLoadTableDataStatus",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "databaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tableId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tableLoadId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadTableStatus"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{tableId}/grants/roles/{roleId}": {
+      "get": {
+        "summary": "Get table grants for role id",
+        "operationId": "listTableRoleGrantsForRole",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "databaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tableId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListTableRoleGrantsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/grants/roles/{roleId}": {
+      "get": {
+        "summary": "Get database grants for role id",
+        "operationId": "listDatabaseRoleGrantsForRole",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "databaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRoleDatabaseGrantsResponse"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1340,7 +2298,7 @@
     "/v1/organizations/{organizationId}/members/": {
       "get": {
         "summary": "Get organization members",
-        "operationId": "getOrganizationMembers",
+        "operationId": "listOrganizationMembers",
         "parameters": [
           {
             "name": "organizationId",
@@ -1359,6 +2317,58 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ListMembersResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/{organizationId}/labels/{labelId}/grants/roles/{roleId}": {
+      "get": {
+        "summary": "Get label grants for role id.",
+        "operationId": "listLabelRoleGrantsForRole",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "labelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListRoleLabelGrantsResponse"
                 }
               }
             }
@@ -1445,6 +2455,51 @@
           }
         ]
       }
+    },
+    "/v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}": {
+      "delete": {
+        "summary": "Drops a database",
+        "operationId": "deleteDatabase",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "databaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "TabularJWTAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -1478,6 +2533,8 @@
               "FUTURE_SELECT",
               "FUTURE_UPDATE",
               "FUTURE_DROP_TABLE",
+              "FUTURE_MANAGE_GRANTS_DATABASE",
+              "FUTURE_MANAGE_GRANTS_TABLE",
               "MODIFY_DATABASE",
               "LIST_TABLES",
               "CREATE_TABLE",
@@ -1494,11 +2551,12 @@
           }
         }
       },
-      "ChangeRoleGrantRequest": {
+      "RoleTableGrantRequest": {
         "type": "object",
         "properties": {
-          "roleName": {
-            "type": "string"
+          "roleId": {
+            "type": "string",
+            "format": "uuid"
           },
           "privilege": {
             "type": "string",
@@ -1522,6 +2580,55 @@
               "FUTURE_SELECT",
               "FUTURE_UPDATE",
               "FUTURE_DROP_TABLE",
+              "FUTURE_MANAGE_GRANTS_DATABASE",
+              "FUTURE_MANAGE_GRANTS_TABLE",
+              "MODIFY_DATABASE",
+              "LIST_TABLES",
+              "CREATE_TABLE",
+              "DROP",
+              "SELECT",
+              "UPDATE",
+              "CREATE_LABEL",
+              "MODIFY_LABEL",
+              "APPLY_LABEL"
+            ]
+          },
+          "withGrant": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RoleDatabaseGrantRequest": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "privilege": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "USAGE",
+              "MODIFY_ORGANIZATION",
+              "MANAGE_USERS",
+              "MANAGE_BILLING",
+              "MANAGE_GRANTS",
+              "CREATE_ROLE",
+              "CREATE_WAREHOUSE",
+              "LIST_WAREHOUSES",
+              "MODIFY_ROLE",
+              "MODIFY_WAREHOUSE",
+              "LIST_DATABASES",
+              "CREATE_DATABASE",
+              "FUTURE_MODIFY_DATABASE",
+              "FUTURE_LIST_TABLES",
+              "FUTURE_CREATE_TABLE",
+              "FUTURE_SELECT",
+              "FUTURE_UPDATE",
+              "FUTURE_DROP_TABLE",
+              "FUTURE_MANAGE_GRANTS_DATABASE",
+              "FUTURE_MANAGE_GRANTS_TABLE",
               "MODIFY_DATABASE",
               "LIST_TABLES",
               "CREATE_TABLE",
@@ -1570,6 +2677,235 @@
           }
         }
       },
+      "RoleLabelGrantRequest": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "privilege": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "USAGE",
+              "MODIFY_ORGANIZATION",
+              "MANAGE_USERS",
+              "MANAGE_BILLING",
+              "MANAGE_GRANTS",
+              "CREATE_ROLE",
+              "CREATE_WAREHOUSE",
+              "LIST_WAREHOUSES",
+              "MODIFY_ROLE",
+              "MODIFY_WAREHOUSE",
+              "LIST_DATABASES",
+              "CREATE_DATABASE",
+              "FUTURE_MODIFY_DATABASE",
+              "FUTURE_LIST_TABLES",
+              "FUTURE_CREATE_TABLE",
+              "FUTURE_SELECT",
+              "FUTURE_UPDATE",
+              "FUTURE_DROP_TABLE",
+              "FUTURE_MANAGE_GRANTS_DATABASE",
+              "FUTURE_MANAGE_GRANTS_TABLE",
+              "MODIFY_DATABASE",
+              "LIST_TABLES",
+              "CREATE_TABLE",
+              "DROP",
+              "SELECT",
+              "UPDATE",
+              "CREATE_LABEL",
+              "MODIFY_LABEL",
+              "APPLY_LABEL"
+            ]
+          },
+          "withGrant": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateLabelFieldMaskingRequest": {
+        "type": "object",
+        "properties": {
+          "maskMode": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "NULL",
+              "HIDE"
+            ]
+          }
+        }
+      },
+      "Label": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "allowedResourceTypes": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "WAREHOUSE",
+                "DATABASE",
+                "TABLE",
+                "FIELD",
+                "STORAGE_PROFILE",
+                "ROLE"
+              ]
+            }
+          },
+          "maskMode": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "NULL",
+              "HIDE"
+            ]
+          }
+        }
+      },
+      "CreateTableRequest": {
+        "type": "object",
+        "properties": {
+          "tableName": {
+            "type": "string"
+          },
+          "bucket": {
+            "type": "string"
+          },
+          "prefixes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "UNKNOWN",
+              "CREATE",
+              "CREATE_LOAD",
+              "CREATE_AUTO_LOAD"
+            ]
+          },
+          "fileLoaderConfig": {
+            "$ref": "#/components/schemas/FileLoaderConfig"
+          },
+          "useMaps": {
+            "type": "boolean"
+          },
+          "onCompletionProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "inferPartitionsFromPath": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FileLoaderConfig": {
+        "type": "object",
+        "properties": {
+          "fileFormat": {
+            "type": "string"
+          },
+          "delimiter": {
+            "type": "string"
+          },
+          "hasHeader": {
+            "type": "boolean"
+          },
+          "fileFilter": {
+            "type": "string"
+          },
+          "tableBranchName": {
+            "type": "string"
+          },
+          "escape": {
+            "type": "string"
+          },
+          "dateFormat": {
+            "type": "string"
+          },
+          "timestampFormat": {
+            "type": "string"
+          },
+          "timestampNTZFormat": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateTableResponse": {
+        "type": "object",
+        "properties": {
+          "tableReferenceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tableLoadId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "LoadTableRequest": {
+        "type": "object",
+        "properties": {
+          "bucket": {
+            "type": "string"
+          },
+          "prefixes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "UNKNOWN",
+              "APPEND",
+              "REPLACE",
+              "APPEND_AUTO_LOAD",
+              "REPLACE_AUTO_LOAD"
+            ]
+          },
+          "fileLoaderConfig": {
+            "$ref": "#/components/schemas/FileLoaderConfig"
+          },
+          "cancelRunningLoad": {
+            "type": "boolean"
+          },
+          "onCompletionProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "LoadTableResponse": {
+        "type": "object",
+        "properties": {
+          "tableLoadId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "CreateDatabaseRequest": {
         "type": "object",
         "properties": {
@@ -1587,8 +2923,30 @@
       "CreateDatabaseResponse": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
           "name": {
             "type": "string"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedBy": {
+            "type": "string"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
           },
           "properties": {
             "type": "object",
@@ -1703,6 +3061,32 @@
           }
         }
       },
+      "CreateLabelRequest": {
+        "type": "object",
+        "properties": {
+          "labelName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "allowedResourceTypes": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "WAREHOUSE",
+                "DATABASE",
+                "TABLE",
+                "FIELD",
+                "STORAGE_PROFILE",
+                "ROLE"
+              ]
+            }
+          }
+        }
+      },
       "CreateServiceAccountCredentialRequest": {
         "type": "object",
         "properties": {
@@ -1781,6 +3165,32 @@
           }
         }
       },
+      "UpdateLabelRequest": {
+        "type": "object",
+        "properties": {
+          "labelName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "allowedResourceTypes": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "WAREHOUSE",
+                "DATABASE",
+                "TABLE",
+                "FIELD",
+                "STORAGE_PROFILE",
+                "ROLE"
+              ]
+            }
+          }
+        }
+      },
       "GetWarehouseResponse": {
         "type": "object",
         "properties": {
@@ -1854,6 +3264,8 @@
               "FUTURE_SELECT",
               "FUTURE_UPDATE",
               "FUTURE_DROP_TABLE",
+              "FUTURE_MANAGE_GRANTS_DATABASE",
+              "FUTURE_MANAGE_GRANTS_TABLE",
               "MODIFY_DATABASE",
               "LIST_TABLES",
               "CREATE_TABLE",
@@ -1912,7 +3324,96 @@
           }
         }
       },
-      "ListDatabaseRoleGrantsResponse": {
+      "GetTableResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "database": {
+            "type": "string"
+          }
+        }
+      },
+      "LoadTableStatus": {
+        "type": "object",
+        "properties": {
+          "tableLoadId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tableRefId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "statusMessage": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "loadTableState": {
+            "type": "string"
+          },
+          "progress": {
+            "type": "number",
+            "format": "float"
+          },
+          "attempt": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalBytes": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalLoadedBytes": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalFileCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalLoadedFileCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expireAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timeoutAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ListTableRoleGrantsResponse": {
         "type": "object",
         "properties": {
           "grants": {
@@ -1955,6 +3456,8 @@
               "FUTURE_SELECT",
               "FUTURE_UPDATE",
               "FUTURE_DROP_TABLE",
+              "FUTURE_MANAGE_GRANTS_DATABASE",
+              "FUTURE_MANAGE_GRANTS_TABLE",
               "MODIFY_DATABASE",
               "LIST_TABLES",
               "CREATE_TABLE",
@@ -1980,6 +3483,85 @@
           },
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "ListDatabaseRoleGrantsResponse": {
+        "type": "object",
+        "properties": {
+          "grants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleGrantDetail"
+            }
+          }
+        }
+      },
+      "DatabaseAuthorization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "subjectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "privilege": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "USAGE",
+              "MODIFY_ORGANIZATION",
+              "MANAGE_USERS",
+              "MANAGE_BILLING",
+              "MANAGE_GRANTS",
+              "CREATE_ROLE",
+              "CREATE_WAREHOUSE",
+              "LIST_WAREHOUSES",
+              "MODIFY_ROLE",
+              "MODIFY_WAREHOUSE",
+              "LIST_DATABASES",
+              "CREATE_DATABASE",
+              "FUTURE_MODIFY_DATABASE",
+              "FUTURE_LIST_TABLES",
+              "FUTURE_CREATE_TABLE",
+              "FUTURE_SELECT",
+              "FUTURE_UPDATE",
+              "FUTURE_DROP_TABLE",
+              "FUTURE_MANAGE_GRANTS_DATABASE",
+              "FUTURE_MANAGE_GRANTS_TABLE",
+              "MODIFY_DATABASE",
+              "LIST_TABLES",
+              "CREATE_TABLE",
+              "DROP",
+              "SELECT",
+              "UPDATE",
+              "CREATE_LABEL",
+              "MODIFY_LABEL",
+              "APPLY_LABEL"
+            ]
+          },
+          "withGrant": {
+            "type": "boolean"
+          },
+          "resource": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          }
+        }
+      },
+      "GetRoleDatabaseGrantsResponse": {
+        "type": "object",
+        "properties": {
+          "authorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DatabaseAuthorization"
+            }
           }
         }
       },
@@ -2116,6 +3698,66 @@
           }
         }
       },
+      "GetLabelResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "allowedResourceTypes": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "WAREHOUSE",
+                "DATABASE",
+                "TABLE",
+                "FIELD",
+                "STORAGE_PROFILE",
+                "ROLE"
+              ]
+            }
+          },
+          "maskMode": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "NULL",
+              "HIDE"
+            ]
+          }
+        }
+      },
+      "ListRoleLabelGrantsResponse": {
+        "type": "object",
+        "properties": {
+          "grants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleGrantDetail"
+            }
+          }
+        }
+      },
+      "ListLabelsResponse": {
+        "type": "object",
+        "properties": {
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Label"
+            }
+          }
+        }
+      },
       "GetCredentialResponse": {
         "type": "object",
         "properties": {
@@ -2174,6 +3816,16 @@
       }
     },
     "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "description": "The Tabular API uses Oauth2 with the client credential flow",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "/ws/v1/oauth/tokens",
+            "scopes": {}
+          }
+        }
+      },
       "TabularJWTAuth": {
         "type": "http",
         "scheme": "bearer",

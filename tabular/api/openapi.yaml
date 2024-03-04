@@ -1,10 +1,16 @@
 openapi: 3.0.1
 info:
-  title: OpenAPI definition
-  version: v0
+  description: Tabular OpenAPI Definition
+  title: Tabular API
+  version: 1.54.5
 servers:
-- description: Generated server url
-  url: https://api.tabular.io
+- description: Tabular API Endpoint
+  url: "{scheme}://{server}"
+  variables:
+    server:
+      default: api.tabular.io
+    scheme:
+      default: https
 paths:
   /v1/organizations/{organizationId}/warehouses/{warehouseId}/grants:
     delete:
@@ -73,7 +79,151 @@ paths:
       security:
       - TabularJWTAuth: []
       summary: Grant privileges on a warehouse
-  /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{database}/grants:
+  /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{tableId}/grants:
+    delete:
+      operationId: revokePrivilegesOnTable
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: warehouseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: databaseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: tableId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/RoleTableGrantRequest'
+              type: array
+        required: true
+      responses:
+        "200":
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Revoke privileges on table
+    get:
+      operationId: listTableRoleGrants
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: warehouseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: databaseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: tableId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ListTableRoleGrantsResponse'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: List all grants for table
+    put:
+      operationId: grantPrivilegesOnTable
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: warehouseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: databaseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: tableId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/RoleTableGrantRequest'
+              type: array
+        required: true
+      responses:
+        "200":
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Grant privileges on table
+  /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/grants:
     delete:
       operationId: revokePrivilegesOnDatabase
       parameters:
@@ -95,9 +245,10 @@ paths:
         style: simple
       - explode: false
         in: path
-        name: database
+        name: databaseId
         required: true
         schema:
+          format: uuid
           type: string
         style: simple
       requestBody:
@@ -105,7 +256,7 @@ paths:
           application/json:
             schema:
               items:
-                $ref: '#/components/schemas/ChangeRoleGrantRequest'
+                $ref: '#/components/schemas/RoleDatabaseGrantRequest'
               type: array
         required: true
       responses:
@@ -115,7 +266,7 @@ paths:
       - TabularJWTAuth: []
       summary: Revoke privileges on database
     get:
-      operationId: getDatabaseRoleGrants
+      operationId: listDatabaseRoleGrants
       parameters:
       - explode: false
         in: path
@@ -135,9 +286,10 @@ paths:
         style: simple
       - explode: false
         in: path
-        name: database
+        name: databaseId
         required: true
         schema:
+          format: uuid
           type: string
         style: simple
       responses:
@@ -171,9 +323,10 @@ paths:
         style: simple
       - explode: false
         in: path
-        name: database
+        name: databaseId
         required: true
         schema:
+          format: uuid
           type: string
         style: simple
       requestBody:
@@ -181,7 +334,7 @@ paths:
           application/json:
             schema:
               items:
-                $ref: '#/components/schemas/ChangeRoleGrantRequest'
+                $ref: '#/components/schemas/RoleDatabaseGrantRequest'
               type: array
         required: true
       responses:
@@ -411,6 +564,234 @@ paths:
       security:
       - TabularJWTAuth: []
       summary: Add child to role
+  /v1/organizations/{organizationId}/labels/{labelId}/grants:
+    delete:
+      operationId: revokePrivilegesOnLabel
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: labelId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/RoleLabelGrantRequest'
+              type: array
+        required: true
+      responses:
+        "200":
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Revoke privileges on a label.
+    get:
+      operationId: listLabelRoleGrants
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: labelId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ListRoleLabelGrantsResponse'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: List all grants for label
+    put:
+      operationId: grantPrivilegesOnLabel
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: labelId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/RoleLabelGrantRequest'
+              type: array
+        required: true
+      responses:
+        "200":
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Grant privileges on a label.
+  /v1/organizations/{organizationId}/labels/{labelId}/field/masking:
+    put:
+      operationId: updateLabelFieldMaskingMode
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: labelId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLabelFieldMaskingRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Label'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Change label field masking mode.
+  /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables:
+    post:
+      operationId: createTableFromFiles
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: warehouseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: databaseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTableRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CreateTableResponse'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Create and load a table with the data found in a bucket.
+  /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{tableId}/loads:
+    post:
+      operationId: loadTableData
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: warehouseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: databaseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: tableId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoadTableRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LoadTableResponse'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: One time batch load a table with the data found in a bucket.
   /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/:
     post:
       operationId: createDatabase
@@ -567,6 +948,55 @@ paths:
       security:
       - TabularJWTAuth: []
       summary: Create role
+  /v1/organizations/{organizationId}/labels/:
+    get:
+      operationId: listLabels
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ListLabelsResponse'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Get organization labels
+    post:
+      operationId: createLabel
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLabelRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Label'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Add a label to an organization
   /v1/organizations/{organizationId}/iam/credentials/service-account:
     post:
       operationId: createServiceAccountCredential
@@ -707,6 +1137,96 @@ paths:
       security:
       - TabularJWTAuth: []
       summary: Create an IAM Role Mapping
+  /v1/organizations/{organizationId}/labels/{labelId}:
+    delete:
+      operationId: deleteLabel
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: labelId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Remove a label from an organization.
+    get:
+      operationId: getLabel
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: labelId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/GetLabelResponse'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Get organization label
+    patch:
+      operationId: updateLabel
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: labelId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/UpdateLabelRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Label'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Update organization label.
   /v1/organizations/{organizationId}/warehouses/{warehouseId}:
     delete:
       operationId: deleteWarehouse
@@ -764,7 +1284,7 @@ paths:
       summary: Get a warehouse by id
   /v1/organizations/{organizationId}/warehouses/{warehouseId}/grants/roles/{roleId}:
     get:
-      operationId: getRoleWarehouseGrants
+      operationId: listWarehouseRoleGrantsForRole
       parameters:
       - explode: false
         in: path
@@ -799,40 +1319,8 @@ paths:
           description: OK
       security:
       - TabularJWTAuth: []
-      summary: Get warehouse grants by role name
+      summary: Get warehouse grants for role id
   /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{database}:
-    delete:
-      operationId: deleteDatabase
-      parameters:
-      - explode: false
-        in: path
-        name: organizationId
-        required: true
-        schema:
-          format: uuid
-          type: string
-        style: simple
-      - explode: false
-        in: path
-        name: warehouseId
-        required: true
-        schema:
-          format: uuid
-          type: string
-        style: simple
-      - explode: false
-        in: path
-        name: database
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          description: OK
-      security:
-      - TabularJWTAuth: []
-      summary: Drops a database
     get:
       operationId: getDatabase
       parameters:
@@ -859,6 +1347,14 @@ paths:
         schema:
           type: string
         style: simple
+      - explode: true
+        in: query
+        name: type
+        required: false
+        schema:
+          default: name
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -869,6 +1365,205 @@ paths:
       security:
       - TabularJWTAuth: []
       summary: Gets extended information on a database
+  /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{table}:
+    get:
+      operationId: getTable
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: warehouseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: databaseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: table
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/GetTableResponse'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Get table information
+  /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{tableId}/loads/{tableLoadId}:
+    get:
+      operationId: getLoadTableDataStatus
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: warehouseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: databaseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: tableId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: tableLoadId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/LoadTableStatus'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: One time batch load a table with the data found in a bucket.
+  /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{tableId}/grants/roles/{roleId}:
+    get:
+      operationId: listTableRoleGrantsForRole
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: warehouseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: databaseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: tableId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: roleId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ListTableRoleGrantsResponse'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Get table grants for role id
+  /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/grants/roles/{roleId}:
+    get:
+      operationId: listDatabaseRoleGrantsForRole
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: warehouseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: databaseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: roleId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/GetRoleDatabaseGrantsResponse'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Get database grants for role id
   /v1/organizations/{organizationId}/storage-profiles/{storageProfileId}:
     delete:
       operationId: deleteStorageProfile
@@ -926,7 +1621,7 @@ paths:
       summary: Get a storage profile by ID
   /v1/organizations/{organizationId}/members/:
     get:
-      operationId: getOrganizationMembers
+      operationId: listOrganizationMembers
       parameters:
       - explode: false
         in: path
@@ -946,6 +1641,44 @@ paths:
       security:
       - TabularJWTAuth: []
       summary: Get organization members
+  /v1/organizations/{organizationId}/labels/{labelId}/grants/roles/{roleId}:
+    get:
+      operationId: listLabelRoleGrantsForRole
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: labelId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: roleId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ListRoleLabelGrantsResponse'
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Get label grants for role id.
   /v1/organizations/{organizationId}/iam/credentials/{credentialKey}:
     delete:
       operationId: deleteMemberCredential
@@ -999,6 +1732,40 @@ paths:
       security:
       - TabularJWTAuth: []
       summary: Fetch information about a credential
+  /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}:
+    delete:
+      operationId: deleteDatabase
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: warehouseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: databaseId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Drops a database
 components:
   schemas:
     RoleWarehouseGrantRequest:
@@ -1031,6 +1798,8 @@ components:
           - FUTURE_SELECT
           - FUTURE_UPDATE
           - FUTURE_DROP_TABLE
+          - FUTURE_MANAGE_GRANTS_DATABASE
+          - FUTURE_MANAGE_GRANTS_TABLE
           - MODIFY_DATABASE
           - LIST_TABLES
           - CREATE_TABLE
@@ -1044,13 +1813,14 @@ components:
         withGrant:
           type: boolean
       type: object
-    ChangeRoleGrantRequest:
+    RoleTableGrantRequest:
       example:
         withGrant: true
-        roleName: roleName
+        roleId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
         privilege: ALL
       properties:
-        roleName:
+        roleId:
+          format: uuid
           type: string
         privilege:
           enum:
@@ -1073,6 +1843,53 @@ components:
           - FUTURE_SELECT
           - FUTURE_UPDATE
           - FUTURE_DROP_TABLE
+          - FUTURE_MANAGE_GRANTS_DATABASE
+          - FUTURE_MANAGE_GRANTS_TABLE
+          - MODIFY_DATABASE
+          - LIST_TABLES
+          - CREATE_TABLE
+          - DROP
+          - SELECT
+          - UPDATE
+          - CREATE_LABEL
+          - MODIFY_LABEL
+          - APPLY_LABEL
+          type: string
+        withGrant:
+          type: boolean
+      type: object
+    RoleDatabaseGrantRequest:
+      example:
+        withGrant: true
+        roleId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        privilege: ALL
+      properties:
+        roleId:
+          format: uuid
+          type: string
+        privilege:
+          enum:
+          - ALL
+          - USAGE
+          - MODIFY_ORGANIZATION
+          - MANAGE_USERS
+          - MANAGE_BILLING
+          - MANAGE_GRANTS
+          - CREATE_ROLE
+          - CREATE_WAREHOUSE
+          - LIST_WAREHOUSES
+          - MODIFY_ROLE
+          - MODIFY_WAREHOUSE
+          - LIST_DATABASES
+          - CREATE_DATABASE
+          - FUTURE_MODIFY_DATABASE
+          - FUTURE_LIST_TABLES
+          - FUTURE_CREATE_TABLE
+          - FUTURE_SELECT
+          - FUTURE_UPDATE
+          - FUTURE_DROP_TABLE
+          - FUTURE_MANAGE_GRANTS_DATABASE
+          - FUTURE_MANAGE_GRANTS_TABLE
           - MODIFY_DATABASE
           - LIST_TABLES
           - CREATE_TABLE
@@ -1115,6 +1932,242 @@ components:
         withAdmin:
           type: boolean
       type: object
+    RoleLabelGrantRequest:
+      example:
+        withGrant: true
+        roleId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        privilege: ALL
+      properties:
+        roleId:
+          format: uuid
+          type: string
+        privilege:
+          enum:
+          - ALL
+          - USAGE
+          - MODIFY_ORGANIZATION
+          - MANAGE_USERS
+          - MANAGE_BILLING
+          - MANAGE_GRANTS
+          - CREATE_ROLE
+          - CREATE_WAREHOUSE
+          - LIST_WAREHOUSES
+          - MODIFY_ROLE
+          - MODIFY_WAREHOUSE
+          - LIST_DATABASES
+          - CREATE_DATABASE
+          - FUTURE_MODIFY_DATABASE
+          - FUTURE_LIST_TABLES
+          - FUTURE_CREATE_TABLE
+          - FUTURE_SELECT
+          - FUTURE_UPDATE
+          - FUTURE_DROP_TABLE
+          - FUTURE_MANAGE_GRANTS_DATABASE
+          - FUTURE_MANAGE_GRANTS_TABLE
+          - MODIFY_DATABASE
+          - LIST_TABLES
+          - CREATE_TABLE
+          - DROP
+          - SELECT
+          - UPDATE
+          - CREATE_LABEL
+          - MODIFY_LABEL
+          - APPLY_LABEL
+          type: string
+        withGrant:
+          type: boolean
+      type: object
+    UpdateLabelFieldMaskingRequest:
+      example:
+        maskMode: NONE
+      properties:
+        maskMode:
+          enum:
+          - NONE
+          - "NULL"
+          - HIDE
+          type: string
+      type: object
+    Label:
+      example:
+        allowedResourceTypes:
+        - WAREHOUSE
+        - WAREHOUSE
+        name: name
+        description: description
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        maskMode: NONE
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        allowedResourceTypes:
+          items:
+            enum:
+            - WAREHOUSE
+            - DATABASE
+            - TABLE
+            - FIELD
+            - STORAGE_PROFILE
+            - ROLE
+            type: string
+          type: array
+          uniqueItems: true
+        maskMode:
+          enum:
+          - NONE
+          - "NULL"
+          - HIDE
+          type: string
+      type: object
+    CreateTableRequest:
+      example:
+        bucket: bucket
+        mode: UNKNOWN
+        prefixes:
+        - prefixes
+        - prefixes
+        useMaps: true
+        fileLoaderConfig:
+          hasHeader: true
+          fileFilter: fileFilter
+          timestampNTZFormat: timestampNTZFormat
+          dateFormat: dateFormat
+          delimiter: delimiter
+          timestampFormat: timestampFormat
+          tableBranchName: tableBranchName
+          escape: escape
+          fileFormat: fileFormat
+        inferPartitionsFromPath: true
+        tableName: tableName
+        onCompletionProperties:
+          key: onCompletionProperties
+      properties:
+        tableName:
+          type: string
+        bucket:
+          type: string
+        prefixes:
+          items:
+            type: string
+          type: array
+        mode:
+          enum:
+          - UNKNOWN
+          - CREATE
+          - CREATE_LOAD
+          - CREATE_AUTO_LOAD
+          type: string
+        fileLoaderConfig:
+          $ref: '#/components/schemas/FileLoaderConfig'
+        useMaps:
+          type: boolean
+        onCompletionProperties:
+          additionalProperties:
+            type: string
+          type: object
+        inferPartitionsFromPath:
+          type: boolean
+      type: object
+    FileLoaderConfig:
+      example:
+        hasHeader: true
+        fileFilter: fileFilter
+        timestampNTZFormat: timestampNTZFormat
+        dateFormat: dateFormat
+        delimiter: delimiter
+        timestampFormat: timestampFormat
+        tableBranchName: tableBranchName
+        escape: escape
+        fileFormat: fileFormat
+      properties:
+        fileFormat:
+          type: string
+        delimiter:
+          type: string
+        hasHeader:
+          type: boolean
+        fileFilter:
+          type: string
+        tableBranchName:
+          type: string
+        escape:
+          type: string
+        dateFormat:
+          type: string
+        timestampFormat:
+          type: string
+        timestampNTZFormat:
+          type: string
+      type: object
+    CreateTableResponse:
+      example:
+        tableReferenceId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        tableLoadId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        tableReferenceId:
+          format: uuid
+          type: string
+        tableLoadId:
+          format: uuid
+          type: string
+      type: object
+    LoadTableRequest:
+      example:
+        bucket: bucket
+        mode: UNKNOWN
+        prefixes:
+        - prefixes
+        - prefixes
+        fileLoaderConfig:
+          hasHeader: true
+          fileFilter: fileFilter
+          timestampNTZFormat: timestampNTZFormat
+          dateFormat: dateFormat
+          delimiter: delimiter
+          timestampFormat: timestampFormat
+          tableBranchName: tableBranchName
+          escape: escape
+          fileFormat: fileFormat
+        cancelRunningLoad: true
+        onCompletionProperties:
+          key: onCompletionProperties
+      properties:
+        bucket:
+          type: string
+        prefixes:
+          items:
+            type: string
+          type: array
+        mode:
+          enum:
+          - UNKNOWN
+          - APPEND
+          - REPLACE
+          - APPEND_AUTO_LOAD
+          - REPLACE_AUTO_LOAD
+          type: string
+        fileLoaderConfig:
+          $ref: '#/components/schemas/FileLoaderConfig'
+        cancelRunningLoad:
+          type: boolean
+        onCompletionProperties:
+          additionalProperties:
+            type: string
+          type: object
+      type: object
+    LoadTableResponse:
+      example:
+        tableLoadId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        tableLoadId:
+          format: uuid
+          type: string
+      type: object
     CreateDatabaseRequest:
       example:
         name: name
@@ -1130,11 +2183,33 @@ components:
       type: object
     CreateDatabaseResponse:
       example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        warehouseId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        createdBy: createdBy
+        lastModifiedBy: lastModifiedBy
         name: name
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        lastModified: 2000-01-23T04:56:07.000+00:00
         properties:
           key: properties
       properties:
+        id:
+          format: uuid
+          type: string
+        warehouseId:
+          format: uuid
+          type: string
         name:
+          type: string
+        createdBy:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        lastModifiedBy:
+          type: string
+        lastModified:
+          format: date-time
           type: string
         properties:
           additionalProperties:
@@ -1240,6 +2315,31 @@ components:
         name:
           type: string
       type: object
+    CreateLabelRequest:
+      example:
+        allowedResourceTypes:
+        - WAREHOUSE
+        - WAREHOUSE
+        description: description
+        labelName: labelName
+      properties:
+        labelName:
+          type: string
+        description:
+          type: string
+        allowedResourceTypes:
+          items:
+            enum:
+            - WAREHOUSE
+            - DATABASE
+            - TABLE
+            - FIELD
+            - STORAGE_PROFILE
+            - ROLE
+            type: string
+          type: array
+          uniqueItems: true
+      type: object
     CreateServiceAccountCredentialRequest:
       example:
         roleId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
@@ -1311,6 +2411,25 @@ components:
         roleId:
           format: uuid
           type: string
+      type: object
+    UpdateLabelRequest:
+      properties:
+        labelName:
+          type: string
+        description:
+          type: string
+        allowedResourceTypes:
+          items:
+            enum:
+            - WAREHOUSE
+            - DATABASE
+            - TABLE
+            - FIELD
+            - STORAGE_PROFILE
+            - ROLE
+            type: string
+          type: array
+          uniqueItems: true
       type: object
     GetWarehouseResponse:
       example:
@@ -1397,6 +2516,8 @@ components:
           - FUTURE_SELECT
           - FUTURE_UPDATE
           - FUTURE_DROP_TABLE
+          - FUTURE_MANAGE_GRANTS_DATABASE
+          - FUTURE_MANAGE_GRANTS_TABLE
           - MODIFY_DATABASE
           - LIST_TABLES
           - CREATE_TABLE
@@ -1449,7 +2570,94 @@ components:
             type: string
           type: object
       type: object
-    ListDatabaseRoleGrantsResponse:
+    GetTableResponse:
+      example:
+        organizationId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        database: database
+        warehouseId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        name: name
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          type: string
+        organizationId:
+          format: uuid
+          type: string
+        warehouseId:
+          format: uuid
+          type: string
+        database:
+          type: string
+      type: object
+    LoadTableStatus:
+      example:
+        totalLoadedFileCount: 2
+        totalLoadedBytes: 5
+        timeoutAt: 2000-01-23T04:56:07.000+00:00
+        loadTableState: loadTableState
+        expireAt: 2000-01-23T04:56:07.000+00:00
+        attempt: 6
+        totalFileCount: 5
+        statusMessage: statusMessage
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        warehouseId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        tableRefId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        progress: 0.8008282
+        totalBytes: 1
+        tableLoadId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        state: state
+        lastModified: 2000-01-23T04:56:07.000+00:00
+      properties:
+        tableLoadId:
+          format: uuid
+          type: string
+        warehouseId:
+          format: uuid
+          type: string
+        tableRefId:
+          format: uuid
+          type: string
+        statusMessage:
+          type: string
+        state:
+          type: string
+        loadTableState:
+          type: string
+        progress:
+          format: float
+          type: number
+        attempt:
+          format: int32
+          type: integer
+        totalBytes:
+          format: int64
+          type: integer
+        totalLoadedBytes:
+          format: int64
+          type: integer
+        totalFileCount:
+          format: int32
+          type: integer
+        totalLoadedFileCount:
+          format: int32
+          type: integer
+        lastModified:
+          format: date-time
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        expireAt:
+          format: date-time
+          type: string
+        timeoutAt:
+          format: date-time
+          type: string
+      type: object
+    ListTableRoleGrantsResponse:
       example:
         grants:
         - role:
@@ -1505,6 +2713,8 @@ components:
           - FUTURE_SELECT
           - FUTURE_UPDATE
           - FUTURE_DROP_TABLE
+          - FUTURE_MANAGE_GRANTS_DATABASE
+          - FUTURE_MANAGE_GRANTS_TABLE
           - MODIFY_DATABASE
           - LIST_TABLES
           - CREATE_TABLE
@@ -1528,6 +2738,103 @@ components:
           type: string
         name:
           type: string
+      type: object
+    ListDatabaseRoleGrantsResponse:
+      example:
+        grants:
+        - role:
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          withGrant: true
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          privilege: ALL
+        - role:
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          withGrant: true
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          privilege: ALL
+      properties:
+        grants:
+          items:
+            $ref: '#/components/schemas/RoleGrantDetail'
+          type: array
+      type: object
+    DatabaseAuthorization:
+      example:
+        withGrant: true
+        resource: resource
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        privilege: ALL
+        subjectId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        resourceType: resourceType
+      properties:
+        id:
+          format: uuid
+          type: string
+        subjectId:
+          format: uuid
+          type: string
+        privilege:
+          enum:
+          - ALL
+          - USAGE
+          - MODIFY_ORGANIZATION
+          - MANAGE_USERS
+          - MANAGE_BILLING
+          - MANAGE_GRANTS
+          - CREATE_ROLE
+          - CREATE_WAREHOUSE
+          - LIST_WAREHOUSES
+          - MODIFY_ROLE
+          - MODIFY_WAREHOUSE
+          - LIST_DATABASES
+          - CREATE_DATABASE
+          - FUTURE_MODIFY_DATABASE
+          - FUTURE_LIST_TABLES
+          - FUTURE_CREATE_TABLE
+          - FUTURE_SELECT
+          - FUTURE_UPDATE
+          - FUTURE_DROP_TABLE
+          - FUTURE_MANAGE_GRANTS_DATABASE
+          - FUTURE_MANAGE_GRANTS_TABLE
+          - MODIFY_DATABASE
+          - LIST_TABLES
+          - CREATE_TABLE
+          - DROP
+          - SELECT
+          - UPDATE
+          - CREATE_LABEL
+          - MODIFY_LABEL
+          - APPLY_LABEL
+          type: string
+        withGrant:
+          type: boolean
+        resource:
+          type: string
+        resourceType:
+          type: string
+      type: object
+    GetRoleDatabaseGrantsResponse:
+      example:
+        authorizations:
+        - withGrant: true
+          resource: resource
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          privilege: ALL
+          subjectId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          resourceType: resourceType
+        - withGrant: true
+          resource: resource
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          privilege: ALL
+          subjectId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          resourceType: resourceType
+      properties:
+        authorizations:
+          items:
+            $ref: '#/components/schemas/DatabaseAuthorization'
+          type: array
       type: object
     ListWarehouseResponse:
       example:
@@ -1679,6 +2986,86 @@ components:
         email:
           type: string
       type: object
+    GetLabelResponse:
+      example:
+        allowedResourceTypes:
+        - WAREHOUSE
+        - WAREHOUSE
+        name: name
+        description: description
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        maskMode: NONE
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        allowedResourceTypes:
+          items:
+            enum:
+            - WAREHOUSE
+            - DATABASE
+            - TABLE
+            - FIELD
+            - STORAGE_PROFILE
+            - ROLE
+            type: string
+          type: array
+          uniqueItems: true
+        maskMode:
+          enum:
+          - NONE
+          - "NULL"
+          - HIDE
+          type: string
+      type: object
+    ListRoleLabelGrantsResponse:
+      example:
+        grants:
+        - role:
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          withGrant: true
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          privilege: ALL
+        - role:
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          withGrant: true
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          privilege: ALL
+      properties:
+        grants:
+          items:
+            $ref: '#/components/schemas/RoleGrantDetail'
+          type: array
+      type: object
+    ListLabelsResponse:
+      example:
+        labels:
+        - allowedResourceTypes:
+          - WAREHOUSE
+          - WAREHOUSE
+          name: name
+          description: description
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          maskMode: NONE
+        - allowedResourceTypes:
+          - WAREHOUSE
+          - WAREHOUSE
+          name: name
+          description: description
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          maskMode: NONE
+      properties:
+        labels:
+          items:
+            $ref: '#/components/schemas/Label'
+          type: array
+      type: object
     GetCredentialResponse:
       example:
         organizationId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
@@ -1735,6 +3122,13 @@ components:
           type: boolean
       type: object
   securitySchemes:
+    oauth2:
+      description: The Tabular API uses Oauth2 with the client credential flow
+      flows:
+        clientCredentials:
+          scopes: {}
+          tokenUrl: /ws/v1/oauth/tokens
+      type: oauth2
     TabularJWTAuth:
       bearerFormat: JWT
       scheme: bearer
