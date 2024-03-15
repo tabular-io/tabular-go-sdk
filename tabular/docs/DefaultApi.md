@@ -21,6 +21,7 @@ Method | HTTP request | Description
 [**DeleteLabel**](DefaultAPI.md#DeleteLabel) | **Delete** /v1/organizations/{organizationId}/labels/{labelId} | Remove a label from an organization.
 [**DeleteMemberCredential**](DefaultAPI.md#DeleteMemberCredential) | **Delete** /v1/organizations/{organizationId}/iam/credentials/{credentialKey} | Delete a credential
 [**DeleteRole**](DefaultAPI.md#DeleteRole) | **Delete** /v1/organizations/{organizationId}/roles/{roleName} | Delete Role
+[**DeleteServiceAccountCredential**](DefaultAPI.md#DeleteServiceAccountCredential) | **Delete** /v1/organizations/{organizationId}/iam/credentials/service-account/{credentialKey} | Delete a service credential
 [**DeleteStorageProfile**](DefaultAPI.md#DeleteStorageProfile) | **Delete** /v1/organizations/{organizationId}/storage-profiles/{storageProfileId} | Delete a storage profile by ID
 [**DeleteWarehouse**](DefaultAPI.md#DeleteWarehouse) | **Delete** /v1/organizations/{organizationId}/warehouses/{warehouseId} | Delete warehouse by id
 [**GetCredential**](DefaultAPI.md#GetCredential) | **Get** /v1/organizations/{organizationId}/iam/credentials/{credentialKey} | Fetch information about a credential
@@ -28,7 +29,7 @@ Method | HTTP request | Description
 [**GetLabel**](DefaultAPI.md#GetLabel) | **Get** /v1/organizations/{organizationId}/labels/{labelId} | Get organization label
 [**GetLoadTableDataStatus**](DefaultAPI.md#GetLoadTableDataStatus) | **Get** /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{tableId}/loads/{tableLoadId} | One time batch load a table with the data found in a bucket.
 [**GetRole**](DefaultAPI.md#GetRole) | **Get** /v1/organizations/{organizationId}/roles/{roleName} | Get role
-[**GetStorageProfile**](DefaultAPI.md#GetStorageProfile) | **Get** /v1/organizations/{organizationId}/storage-profiles/{storageProfileId} | Get a storage profile by ID
+[**GetStorageProfile**](DefaultAPI.md#GetStorageProfile) | **Get** /v1/organizations/{organizationId}/storage-profiles/{storageProfile} | Get a storage profile
 [**GetTable**](DefaultAPI.md#GetTable) | **Get** /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/tables/{table} | Get table information
 [**GetWarehouse**](DefaultAPI.md#GetWarehouse) | **Get** /v1/organizations/{organizationId}/warehouses/{warehouseId} | Get a warehouse by id
 [**GrantPrivilegesOnDatabase**](DefaultAPI.md#GrantPrivilegesOnDatabase) | **Put** /v1/organizations/{organizationId}/warehouses/{warehouseId}/databases/{databaseId}/grants | Grant privileges on database
@@ -1264,6 +1265,75 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
+## DeleteServiceAccountCredential
+
+> DeleteServiceAccountCredential(ctx, organizationId, credentialKey).Execute()
+
+Delete a service credential
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/tabular-io/tabular-sdk-go/tabular"
+)
+
+func main() {
+	organizationId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | 
+	credentialKey := "credentialKey_example" // string | 
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	r, err := apiClient.DefaultAPI.DeleteServiceAccountCredential(context.Background(), organizationId, credentialKey).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.DeleteServiceAccountCredential``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**organizationId** | **string** |  | 
+**credentialKey** | **string** |  | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiDeleteServiceAccountCredentialRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+
+### Return type
+
+ (empty response body)
+
+### Authorization
+
+[TabularJWTAuth](../README.md#TabularJWTAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: Not defined
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
 ## DeleteStorageProfile
 
 > DeleteStorageProfile(ctx, organizationId, storageProfileId).Execute()
@@ -1773,9 +1843,9 @@ Name | Type | Description  | Notes
 
 ## GetStorageProfile
 
-> GetStorageProfileResponse GetStorageProfile(ctx, organizationId, storageProfileId).Execute()
+> GetStorageProfileResponse GetStorageProfile(ctx, organizationId, storageProfile).Type_(type_).Execute()
 
-Get a storage profile by ID
+Get a storage profile
 
 ### Example
 
@@ -1791,11 +1861,12 @@ import (
 
 func main() {
 	organizationId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | 
-	storageProfileId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | 
+	storageProfile := "storageProfile_example" // string | 
+	type_ := "type__example" // string |  (optional) (default to "id")
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.DefaultAPI.GetStorageProfile(context.Background(), organizationId, storageProfileId).Execute()
+	resp, r, err := apiClient.DefaultAPI.GetStorageProfile(context.Background(), organizationId, storageProfile).Type_(type_).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.GetStorageProfile``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -1812,7 +1883,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
 **organizationId** | **string** |  | 
-**storageProfileId** | **string** |  | 
+**storageProfile** | **string** |  | 
 
 ### Other Parameters
 
@@ -1823,6 +1894,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 
 
+ **type_** | **string** |  | [default to &quot;id&quot;]
 
 ### Return type
 
