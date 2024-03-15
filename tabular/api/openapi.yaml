@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   description: Tabular OpenAPI Definition
   title: Tabular API
-  version: 1.54.5
+  version: 1.56.5
 servers:
 - description: Tabular API Endpoint
   url: "{scheme}://{server}"
@@ -1564,32 +1564,7 @@ paths:
       security:
       - TabularJWTAuth: []
       summary: Get database grants for role id
-  /v1/organizations/{organizationId}/storage-profiles/{storageProfileId}:
-    delete:
-      operationId: deleteStorageProfile
-      parameters:
-      - explode: false
-        in: path
-        name: organizationId
-        required: true
-        schema:
-          format: uuid
-          type: string
-        style: simple
-      - explode: false
-        in: path
-        name: storageProfileId
-        required: true
-        schema:
-          format: uuid
-          type: string
-        style: simple
-      responses:
-        "200":
-          description: OK
-      security:
-      - TabularJWTAuth: []
-      summary: Delete a storage profile by ID
+  /v1/organizations/{organizationId}/storage-profiles/{storageProfile}:
     get:
       operationId: getStorageProfile
       parameters:
@@ -1603,12 +1578,19 @@ paths:
         style: simple
       - explode: false
         in: path
-        name: storageProfileId
+        name: storageProfile
         required: true
         schema:
-          format: uuid
           type: string
         style: simple
+      - explode: true
+        in: query
+        name: type
+        required: false
+        schema:
+          default: id
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -1618,7 +1600,7 @@ paths:
           description: OK
       security:
       - TabularJWTAuth: []
-      summary: Get a storage profile by ID
+      summary: Get a storage profile
   /v1/organizations/{organizationId}/members/:
     get:
       operationId: listOrganizationMembers
@@ -1766,6 +1748,57 @@ paths:
       security:
       - TabularJWTAuth: []
       summary: Drops a database
+  /v1/organizations/{organizationId}/storage-profiles/{storageProfileId}:
+    delete:
+      operationId: deleteStorageProfile
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: storageProfileId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Delete a storage profile by ID
+  /v1/organizations/{organizationId}/iam/credentials/service-account/{credentialKey}:
+    delete:
+      operationId: deleteServiceAccountCredential
+      parameters:
+      - explode: false
+        in: path
+        name: organizationId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: credentialKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: OK
+      security:
+      - TabularJWTAuth: []
+      summary: Delete a service credential
 components:
   schemas:
     RoleWarehouseGrantRequest:
